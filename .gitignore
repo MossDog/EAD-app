@@ -1,0 +1,5 @@
+# Ignore MongoExample directory
+MongoExample/
+
+# Ignore node_modules directory
+node_modules/
