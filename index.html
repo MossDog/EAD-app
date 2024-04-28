@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations</title>
+</head>
+<body>
+    <h1>CRUD Operations</h1>
+    <button onclick="getProducts()">Get Products</button>
+    <button onclick="createProduct()">Create Product</button>
+    <button onclick="updateProduct()">Update Product</button>
+    <button onclick="deleteProduct()">Delete Product</button>
+    
+    <div id="output"></div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:3000';
+        
+
+        async function getProducts() {
+            const response = await fetch('${SERVER_URL}/products');
+            const data = await response.json();
+            console.log(data)
+            document.getElementById('output').innerHTML = JSON.stringify(data, null, 2);
+        }
+
+        async function createProduct() {
+            const response = await fetch('${SERVER_URL}/products', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: 'New Product',
+                    price: 9.99,
+                    // Add other properties as needed
+                })
+            });
+            const result = await response.json();
+            alert(`New product created with ID: ${result.id}`);
+        }
+
+        async function updateProduct() {
+            const productId = prompt('Enter the ID of the product to update:');
+            const response = await fetch(`${SERVER_URL}/products/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: 'Updated Product',
+                    price: 14.99,
+                    // Add other properties as needed
+                })
+            });
+            const result = await response.text();
+            alert(result);
+        }
+
+        async function deleteProduct() {
+            const productId = prompt('Enter the ID of the product to delete:');
+            const response = await fetch(`${SERVER_URL}/products/${productId}`, {
+                method: 'DELETE'
+            });
+            const result = await response.text();
+            alert(result);
+        }
+    </script>
+</body>
+</html>
