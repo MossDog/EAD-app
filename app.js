@@ -29,6 +29,7 @@ app.use(express.json());
 
 // Route to get all products
 app.get('/products', async (req, res) => {
+    console.log("Attempting to get all products");
     const client = await connectToDb();
     const db = client.db("catalogueDB");
     const products = await db.collection("products").find().toArray();
