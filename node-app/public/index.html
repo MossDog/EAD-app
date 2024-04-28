@@ -16,17 +16,16 @@
 
     <script>
         const SERVER_URL = 'http://localhost:3000';
-        
 
         async function getProducts() {
-            const response = await fetch('${SERVER_URL}/products');
+            const response = await fetch(`${SERVER_URL}/products`);
             const data = await response.json();
             console.log(data)
             document.getElementById('output').innerHTML = JSON.stringify(data, null, 2);
         }
 
         async function createProduct() {
-            const response = await fetch('${SERVER_URL}/products', {
+            const response = await fetch(`${SERVER_URL}/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
