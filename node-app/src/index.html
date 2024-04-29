@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="output.css">
+    <title>CRUD Operations</title>
+</head>
+<body>
+
+    <div class="h-screen flex">
+        <div class="h-screen w-1/3 flex flex-col items-center justify-center">
+            <article class="prose">
+                <h1>Conor Operations</h1>
+            </article>
+        
+            <div class="flex flex-col justify-center p-4">
+                <button class="btn btn-primary m-3" id="createProduct">Create Product</button>
+                <button class="btn btn-primary m-3" id="getProducts">Get Products</button>
+                <button class="btn btn-primary m-3" id="updateProduct">Update Product</button>
+                <button class="btn btn-primary m-3" id="deleteProduct">Delete Product</button>
+            </div>
+        </div>
+
+        <div class="h-screen w-2/3" id="functionPanel"></div>
+
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:8080';
+
+        document.getElementById('getProducts').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/products'); // Fetch products data from server
+                const products = await response.json(); // Parse JSON response
+                displayProduct(products); // Display products
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        });
+
+        function displayProduct(products, currentIndex = 0) {
+
+        const product = products[currentIndex];
+        document.getElementById('functionPanel').innerHTML = `
+        <div class="p-4 flex justify-center">
+            <div class="flex justify-center" id="navigationButtons">
+                <button class="btn btn-secondary" id="firstButton" ${currentIndex === 0 ? 'disabled' : ''}>|<<</button>
+                <button class="btn btn-secondary" id="prevButton" ${currentIndex === 0 ? 'disabled' : ''}><</button>
+                <button class="btn btn-accent" id="nextButton" ${currentIndex === products.length - 1 ? 'disabled' : ''}>></button>
+                <button class="btn btn-accent" id="lastButton" ${currentIndex === products.length - 1 ? 'disabled' : ''}>>>|</button>
+            </div>
+        </div>
+
+        <div class="flex justify-center">
+            <div class="flex justify-center" id="productDisplay">
+                <div class="card shadow-2xl glass w-80 h-100">
+                    <figure class="w-fit">
+                        <img src="${product.image}" alt="${product.description}" class="w-auto h-auto object-contain">
+                    </figure>
+                    <div class="card-body">
+                        <h2 class="card-title">${product.name}</h2>
+                        <p>Price: ${product.price === 0 ? 'Free' : `€${product.price}`}</p>
+                        <p>Shipping: ${product.shipping === 0 ? 'Free' : `€${product.shipping}`}</p>
+                        <p>Total Price: ${product.price + product.shipping === 0 ? 'Free' : `€${product.price + product.shipping}`}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        document.getElementById('firstButton').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                displayProduct(products, 0);
+            }
+        });
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentIndex > 0) {
+                displayProduct(products, currentIndex - 1);
+            }
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            if (currentIndex < products.length - 1) {
+                displayProduct(products, currentIndex + 1);
+            }
+        });
+
+        document.getElementById('lastButton').addEventListener('click', () => {
+            if (currentIndex < products.length - 1) {
+                displayProduct(products, products.length - 1);
+            }
+        });
+        }
+
+
+        async function createProduct() {
+            const response = await fetch(`${SERVER_URL}/products`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: 'New Product',
+                    price: 9.99,
+                    // Add other properties as needed
+                })
+            });
+            const result = await response.json();
+            alert(`New product created with ID: ${result.id}`);
+        }
+
+        async function updateProduct() {
+            const productId = prompt('Enter the ID of the product to update:');
+            const response = await fetch(`${SERVER_URL}/products/${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: 'Updated Product',
+                    price: 14.99,
+                    // Add other properties as needed
+                })
+            });
+            const result = await response.text();
+            alert(result);
+        }
+
+        async function deleteProduct() {
+            const productId = prompt('Enter the ID of the product to delete:');
+            const response = await fetch(`${SERVER_URL}/products/${productId}`, {
+                method: 'DELETE'
+            });
+            const result = await response.text();
+            alert(result);
+        }
+    </script>
+</body>
+<footer class="m-11"></footer>
+</html>

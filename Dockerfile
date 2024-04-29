@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install app dependencies
 RUN npm install
 
+# Generate CSS file with tailwind not working in docker yet
+# RUN npx tailwindcss -i ./src/input.css -o ./src/output.css
+
 # Bundle app source
 COPY . .
 

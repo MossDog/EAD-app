@@ -1,3 +1,4 @@
+console.log("VERY BEGGINING");
 const cors = require('cors');
 const path = require('path');
 const express = require('express');
@@ -12,8 +13,10 @@ app.use(cors());
 const mongoURI = 'mongodb://mongodb:27017/catalogueDB'; // This assumes your MongoDB container is named "mongodb" and uses port 27017
 
 let db;
+console.log("APP IS RUNNING");
 
 async function connectToDb() {
+  console.log("CONNECTING TO DB");
   const client = new MongoClient(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
   await client.connect();
   console.log('Connected to MongoDB');
@@ -21,16 +24,23 @@ async function connectToDb() {
 }
 
 async function loadData() {
+  console.log("LOAD DATA ENETERED");
   const productsCount = await db.collection('products').countDocuments();
+  console.log(productsCount);
   if (productsCount === 0) {
+    
+    console.log("LOADING DATA");
     try {
       const productsData = fs.readFileSync(path.join(__dirname, 'products.json'));
       const initialData = JSON.parse(productsData);
+      console.log(initialData);
       await db.collection('products').insertMany(initialData);
       console.log('Initial data loaded into the database');
     } catch (err) {
       console.error('Error loading initial data:', err);
     }
+  }else{
+    console.log("DATA ALREADY IN DATABASE");
   }
 }
 
@@ -38,8 +48,12 @@ connectToDb()
   .then(loadData)
   .catch(console.error);
 
+// Serve static files from the 'public' directory
+app.use(express.static('src'));
+
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  console.log("SERVING INDEX.HTML");
+  res.sendFile(path.join(__dirname, 'src', 'index.html'));
 });
 
 // Route to get all products
@@ -92,6 +106,6 @@ app.delete('/products/:id', async (req, res) => {
 
 // Add other CRUD routes as needed
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on 0.0.0.0:${PORT}`);
 });

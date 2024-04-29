@@ -2,8 +2,6 @@ version: '3.7'
 services:
   mongodb:
     image: mongo
-    ports:
-      - "27017:27017"
     volumes:
       - mongodb_data:/data/db
 
@@ -11,6 +9,10 @@ services:
     build:
       context: ./node-app
       dockerfile: ../Dockerfile
+    develop:
+      watch:
+      - action: rebuild
+        path: .
     ports:
       - "8080:8080"
     depends_on:
