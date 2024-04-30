@@ -330,8 +330,13 @@ function formatToTwoDecimals(number) {
     return parseFloat(number).toFixed(2);
 }
 
+function aboutButtonClickHandler(){
+    window.location.href = "/aboutPage";
+}
+
 // Event listeners for various actions
 document.getElementById('browseProducts').addEventListener('click', browseProductsClickHandler);
+document.getElementById('aboutThisPage').addEventListener('click', aboutButtonClickHandler);
 document.getElementById('createProduct').addEventListener('click', displayCreateProductForm);
 document.getElementById('searchProducts').addEventListener('click', displaySearchProductsForm);
 document.getElementById('updateProduct').addEventListener('click', displayUpdateProductForm);

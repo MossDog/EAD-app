@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to style.css -->
+    <link rel="stylesheet" href="style.css">
+    <title>About</title>
+</head>
+<body>
+
+    <div class="h-screen flex items-center justify-center">
+
+        <article class="prose">
+
+            <h1>
+                How the application works
+            </h1>
+            <p>
+                The mongodb and node images are built with docker. Tailwindcss and daisyUI are node plugins that are installed during the buildprocess. 
+                These were used for nice css styles. Containerizing the application allows it to be built from almost any machine with very little setup and configuration.
+            </p>
+            <p>
+                The node app serves index.html, style.css, and script.js with express when the user visits the root of the node app. All of the CRUD functionality is available from here.
+                There is also a browse button to view all products in the database as well as the about button which links to a page briefly explaining how the website works (hadn't been been implemented when video was recorded).
+                The app is accesible by the host machines ip on port 8080 from anywhere on the local network assuming the networks port rules allow this.
+            </p>
+            <p>
+                Ajax is used with js to dynamically change the contents of the page according to what the user chooses to do.
+            </p>
+            <p>
+                All database operations are handles by node on the backend.
+            </p>
+
+        </article>
+
+    </div>
+
+</body>
+<footer class="m-11"></footer>
+</html>

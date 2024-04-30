@@ -81,6 +81,12 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'src', 'index.html'));
 
 });
+app.get('/aboutPage', (req, res) => {
+
+  console.log("SERVING ABOUT.HTML");
+  res.sendFile(path.join(__dirname, 'src', 'about.html'));
+
+});
 
 // Route to get all products
 app.get('/browseProducts', async (req, res) => {
