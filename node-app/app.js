@@ -1,4 +1,3 @@
-console.log("VERY BEGGINING");
 const cors = require('cors');
 const path = require('path');
 const express = require('express');
@@ -81,8 +80,8 @@ app.post('/createProduct', async (req, res) => {
   console.log("CREATING PRODUCT");
   const newProduct = req.body;
   try {
-    const result = await db.collection('products').insertOne(newProduct);
-    res.json(result.ops[0]);
+    await db.collection('products').insertOne(newProduct);
+    res.send('Product created successfully');
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server Error' });
@@ -90,12 +89,13 @@ app.post('/createProduct', async (req, res) => {
 });
 
 // Route to update a product
-app.put('/updateProduct', async (req, res) => {
+app.put('/updateProduct/:id', async (req, res) => {
   console.log("UPDATING PRODUCT");
   const productId = req.params.id;
   const updatedProduct = req.body;
   try {
-    await db.collection('products').updateOne({ _id: ObjectId(productId) }, { $set: updatedProduct });
+    console.log("PRODUCT: " + updatedProduct);
+    await db.collection('products').updateOne({ _id: new ObjectId(productId) }, { $set: updatedProduct });
     res.send('Product updated successfully');
   } catch (err) {
     console.error(err);
