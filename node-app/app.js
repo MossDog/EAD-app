@@ -24,25 +24,33 @@ async function connectToDb() {
 }
 
 async function loadData() {
-  console.log("LOAD DATA ENETERED");
+  console.log("LOAD DATA ENTERED");
   const productsCount = await db.collection('products').countDocuments();
   console.log(productsCount);
   if (productsCount === 0) {
-    
     console.log("LOADING DATA");
     try {
       const productsData = fs.readFileSync(path.join(__dirname, 'products.json'));
       const initialData = JSON.parse(productsData);
-      console.log(initialData);
-      await db.collection('products').insertMany(initialData);
+      const formattedData = initialData.map(product => ({
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        shipping: product.shipping,
+        image: product.image
+      }));
+      await db.collection('products').insertMany(formattedData);
       console.log('Initial data loaded into the database');
     } catch (err) {
       console.error('Error loading initial data:', err);
     }
-  }else{
+  } else {
     console.log("DATA ALREADY IN DATABASE");
+    //db.dropDatabase()
+    //loadData()
   }
 }
+
 
 connectToDb()
   .then(loadData)
@@ -57,7 +65,8 @@ app.get('/', (req, res) => {
 });
 
 // Route to get all products
-app.get('/products', async (req, res) => {
+app.get('/getProducts', async (req, res) => {
+  console.log("GETTING ALL PRODUCTS");
   try {
     const products = await db.collection('products').find().toArray();
     res.json(products);
@@ -68,7 +77,8 @@ app.get('/products', async (req, res) => {
 });
 
 // Route to create a new product
-app.post('/products', async (req, res) => {
+app.post('/createProduct', async (req, res) => {
+  console.log("CREATING PRODUCT");
   const newProduct = req.body;
   try {
     const result = await db.collection('products').insertOne(newProduct);
@@ -80,7 +90,8 @@ app.post('/products', async (req, res) => {
 });
 
 // Route to update a product
-app.put('/products/:id', async (req, res) => {
+app.put('/updateProduct', async (req, res) => {
+  console.log("UPDATING PRODUCT");
   const productId = req.params.id;
   const updatedProduct = req.body;
   try {
@@ -93,10 +104,12 @@ app.put('/products/:id', async (req, res) => {
 });
 
 // Route to delete a product
-app.delete('/products/:id', async (req, res) => {
-  const productId = req.params.id;
+app.delete('/deleteProduct/:id', async (req, res) => {
+  console.log("DELETING PRODUCT");
+  const productId = req.params.id; // Access route parameter for product ID
   try {
-    await db.collection('products').deleteOne({ _id: ObjectId(productId) });
+    console.log("PRODUCT_ID: "+productId);
+    await db.collection('products').deleteOne({ _id: new ObjectId(productId) });
     res.send('Product deleted successfully');
   } catch (err) {
     console.error(err);
@@ -104,7 +117,6 @@ app.delete('/products/:id', async (req, res) => {
   }
 });
 
-// Add other CRUD routes as needed
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on 0.0.0.0:${PORT}`);
