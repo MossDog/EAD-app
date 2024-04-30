@@ -45,8 +45,8 @@ async function loadData() {
     }
   } else {
     console.log("DATA ALREADY IN DATABASE");
-    //db.dropDatabase()
-    //loadData()
+    db.dropDatabase()
+    loadData()
   }
 }
 
@@ -64,7 +64,7 @@ app.get('/', (req, res) => {
 });
 
 // Route to get all products
-app.get('/getProducts', async (req, res) => {
+app.get('/browseProducts', async (req, res) => {
   console.log("GETTING ALL PRODUCTS");
   try {
     const products = await db.collection('products').find().toArray();
@@ -87,6 +87,20 @@ app.post('/createProduct', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+
+// Route to get products by name
+app.get('/searchProducts/:name', async (req, res) => {
+  console.log("SEARCHING PRODUCTS BY NAME");
+  const productName = req.params.name;
+  try {
+    const products = await db.collection('products').find({ name: { $regex: productName, $options: 'i' } }).toArray();
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 
 // Route to update a product
 app.put('/updateProduct/:id', async (req, res) => {
