@@ -1,3 +1,4 @@
 # Ignoredirectories
 node_modules/
+Demo/
 .vs/
